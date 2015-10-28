@@ -2,21 +2,25 @@ package com.example.cymas.databuruh;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.cymas.databuruh.domain.Buruh;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by cymas on 28/10/15.
  */
 public class DBAdapter extends SQLiteOpenHelper {
-    private static final String DB_NAME = 'databuruh';
-    private static final String TABLE_NAME = 'buruh';
-    private static final String COL_ID = 'id';
-    private static final String COL_NAMA = 'nama';
-    private static final String COL_ALAMAT = 'jabatan';
-    private static final String COL_JENISKELAMIN = 'jenisKelamin';
+    private static final String DB_NAME = "databuruh";
+    private static final String TABLE_NAME = "buruh";
+    private static final String COL_ID = "id";
+    private static final String COL_NAMA = "nama";
+    private static final String COL_ALAMAT = "jabatan";
+    private static final String COL_JENISKELAMIN = "jenisKelamin";
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS" + TABLE_NAME + ";";
 
     private SQLiteDatabase sqliteDatabase = null;
@@ -57,7 +61,7 @@ public class DBAdapter extends SQLiteOpenHelper {
                 + COL_JENISKELAMIN + " TEXT);");
     }
 
-    public void updateSiswa(Buruh buruh) {
+    public void updateBuruh(Buruh buruh) {
         sqliteDatabase = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
@@ -84,10 +88,10 @@ public class DBAdapter extends SQLiteOpenHelper {
         sqliteDatabase.close();
     }
 
-    public void delete(Siswa siswa) {
+    public void delete(Buruh buruh) {
         sqliteDatabase = getWritableDatabase();
         String whereClause = COL_ID + "==?";
-        String[] whereArgs = new String[] { String.valueOf(siswa.getId()) };
+        String[] whereArgs = new String[] { String.valueOf(buruh.getId()) };
         sqliteDatabase.delete(TABLE_NAME, whereClause, whereArgs);
         sqliteDatabase.close();
     }
@@ -98,28 +102,30 @@ public class DBAdapter extends SQLiteOpenHelper {
         sqliteDatabase.close();
     }
 
-    public List<Siswa> getAllSiswa() {
+    public List<Buruh> getAllBuruh() {
         sqliteDatabase = getWritableDatabase();
 
         Cursor cursor = this.sqliteDatabase.query(TABLE_NAME, new String[] {
-                COL_ID, COL_NAME, COL_KELAS }, null, null, null, null, null);
-        List<Siswa> siswas = new ArrayList<Siswa>();
+                COL_ID, COL_NAMA, COL_ALAMAT, COL_JENISKELAMIN }, null, null, null, null, null);
+        List<Buruh> buruhs = new ArrayList<Buruh>();
 
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
-                Siswa siswa = new Siswa();
-                siswa.setId(cursor.getString(cursor.getColumnIndex(COL_ID)));
-                siswa.setNama(cursor.getString(cursor
-                        .getColumnIndex(COL_NAME)));
-                siswa.setKelas(cursor.getString(cursor
-                        .getColumnIndex(COL_KELAS)));
-                siswas.add(siswa);
+                Buruh buruh = new Buruh();
+                buruh.setId(cursor.getString(cursor.getColumnIndex(COL_ID)));
+                buruh.setNama(cursor.getString(cursor
+                        .getColumnIndex(COL_NAMA)));
+                buruh.setAlamat(cursor.getString(cursor
+                        .getColumnIndex(COL_ALAMAT)));
+                buruh.setJenisKelamin(cursor.getString(cursor
+                        .getColumnIndex(COL_JENISKELAMIN)));
+                buruhs.add(buruh);
             }
             sqliteDatabase.close();
-            return siswas;
+            return buruhs;
         } else {
             sqliteDatabase.close();
-            return new ArrayList<Siswa>();
+            return new ArrayList<Buruh>();
         }
     }
 }
